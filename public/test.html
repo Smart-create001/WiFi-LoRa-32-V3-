@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOGO</title>
+    <link rel="stylesheet" href="cat.css" />
+    <style>
+        /* General */
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #333;
+            background: #fff;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll from animations */
+        }
+
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            /* Make sure it stays on top */
+            top: 0;
+            z-index: 100;
+            /* Ensure navbar is above other content */
+        }
+
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #001f3f;
+        }
+
+
+        .nav-links {
+            display: flex;
+        }
+
+        .nav-links a {
+            margin: 0 12px;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            transition: color 0.3s ease;
+            /* Smooth color transition on hover */
+        }
+
+        .nav-links a:hover {
+            color: #001f3f;
+            /* Darker on hover */
+        }
+
+
+        .nav-icons .icon {
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #f8f4e9;
+            z-index: 10;
+        }
+
+
+        /* Hero Section */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .section-transition1 {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to bottom,
+                    #000000);
+
+        }
+
+        .section-transition {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom,
+                    #000000 0%,
+                    #161616 25%,
+                    #171717 50%,
+                    #181818 75%,
+                    #1a1a1a 100%);
+            /* สีสุดท้ายตรงกับ background gallery */
+        }
+
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            /* เงามืดบนวิดีโอ */
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            /* Initial state for animation */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .hero-content.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .hero-content h1 {
+            font-size: 42px;
+            margin: 0 0 20px;
+        }
+
+
+        .cta-btn {
+            background-color: white;
+            color: #001f3f;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            /* Smooth hover transition */
+        }
+
+        .cta-btn:hover {
+            background-color: #001f3f;
+            color: white;
+            transform: translateY(-2px);
+            /* Slight lift on hover */
+        }
+
+
+        /* New Arrivals */
+        /* ทำให้พื้นหลัง section ไล่สีเหมือน gallery */
+        .new-arrivals {
+            padding: 60px 40px;
+            text-align: center;
+            background: linear-gradient(to bottom,
+                    #000000 0%,
+                    #2e2e2e 20%,
+                    #5a5a5a 40%,
+                    #8c8c8c 60%,
+                    #cfcfcf 80%,
+                    #f5f5f5 100%);
+        }
+
+        /* กล่องรูปสินค้าดูสะอาด กลืนพื้นหลัง */
+        .product-card {
+            text-align: left;
+            background: transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding-bottom: 15px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0;
+            /* Initial state for scroll animation */
+            transform: translateY(50px);
+            /* Initial state for scroll animation */
+            cursor: pointer;
+            /* Indicate clickable */
+        }
+
+        .product-card.fade-in-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* รูปภาพเต็มกรอบ */
+        .product-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* หมวดหมู่ / ชื่อสินค้า */
+        /* Product Card Information Reveal on Hover (Desktop Only) */
+        .product-card .category,
+        .product-card h3 {
+            padding: 0 12px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            /* Apply transition to both properties */
+            opacity: 1;
+            /* Default visible state */
+            transform: translateY(0);
+            /* Default position */
+        }
+
+
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(109, 76, 65, 0.2);
+            color: rgba(109, 76, 65, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+            color: white;
+        }
+
+        .scroll-indicator:hover {
+            opacity: 1;
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(45deg);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0) rotate(45deg);
+            }
+
+            40% {
+                transform: translateY(-10px) rotate(45deg);
+            }
+
+            60% {
+                transform: translateY(-5px) rotate(45deg);
+            }
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            /* Light grey */
+            border-top: 4px solid #001f3f;
+            /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Product Grid for desktop */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            /* Adjust gap as needed */
+            max-width: 1200px;
+            /* Limit width for better presentation */
+            margin: 40px auto;
+            /* Center the grid */
+            padding: 0 20px;
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            /* Hidden by default */
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 25px;
+            height: 20px;
+            z-index: 101;
+            /* Ensure it's above other elements */
+        }
+
+        .hamburger .bar {
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            transition: all 0.3s ease;
+        }
+
+        /* Styles for when hamburger is active */
+        .hamburger.active .bar:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .bar:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .cta-btn-link {
+            text-decoration: none;
+            /* Remove underline from the link */
+        }
+
+        @media (min-width: 769px) {
+
+            /* Apply only on desktop and larger screens */
+            .product-card .category,
+            .product-card h3 {
+                opacity: 0;
+                /* Hidden by default on desktop */
+                transform: translateY(10px);
+                /* Slightly off-set */
+            }
+
+            .product-card:hover .category,
+            .product-card:hover h3 {
+                opacity: 1;
+                /* Reveal on hover */
+                transform: translateY(0);
+                /* Slide up to original position */
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 28px;
+            }
+
+            .cta-btn {
+                font-size: 14px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .navbar {
+                flex-direction: row;
+                /* Keep logo and hamburger on one row */
+                justify-content: space-between;
+                /* Space out logo and hamburger */
+                align-items: center;
+            }
+
+            .nav-links {
+                display: none;
+                /* Hide default nav links on small screens */
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                /* Below the navbar */
+                left: 0;
+                width: 100%;
+                background-color: #f8f4e9;
+                /* Match header background */
+                border-top: 1px solid #eee;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                padding: 20px 0;
+                transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+                transform: translateY(-100%);
+                /* Start off-screen */
+                opacity: 0;
+                z-index: 99;
+                /* Below navbar, above other content */
+            }
+
+            .nav-links.active {
+                display: flex;
+                /* Show when active */
+                transform: translateY(0);
+                /* Slide in */
+                opacity: 1;
+            }
+
+            .nav-links a {
+                margin: 10px 0;
+                padding: 10px 40px;
+                text-align: center;
+                width: 100%;
+            }
+
+            .hamburger {
+                display: flex;
+                /* Show hamburger on small screens */
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                /* Single column on small screens */
+            }
+        }
+
+        /* Image Modal Styles */
+        .image-modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 200;
+            /* Sit on top of everything */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.9);
+            /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .image-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            /* Ensure image fits without cropping */
+            transform: scale(0.8);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .image-modal.fade-out {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        .image-modal.fade-out .modal-content {
+            transform: scale(0.8);
+        }
+
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <header class="navbar">
+        <div class="logo">VICI</div>
+        <nav class="nav-links">
+            <a href="#contact">Contact Us</a>
+        </nav>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
+
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="Video_Head.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="hero-content">
+            <p>SIIE</p>
+            <h1>"JERSEY COLLECTION"</h1>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6FC5rOSx943-Qar394AJ7OLei9aU1FxfYis5BSpx_UGhwlA/viewform?fbclid=IwY2xjawLiGGNleHRuA2FlbQIxMQBicmlkETFvekFHS1Rja3lZNmhNVnBPAR6ctG_JyawJfquDOnpFD7tFzuOOaQEX6tzMCrVnSjVXs9W3J8oODb8UW_lCmQ_aem_xcvce3ww8CIxiWaiey5pZg"
+                target="_blank" class="cta-btn-link">
+                <button class="cta-btn">Order Now</button>
+            </a>
+        </div>
+
+
+    </section>
+    <div class="scroll-indicator"
+        onclick="document.querySelector('.new-arrivals').scrollIntoView({ behavior: 'smooth' })">
+        <span>Explore Collection</span>
+        <div class="scroll-arrow"></div>
+    </div>
+    <section class="new-arrivals gallery">
+        <h2 style="color: #e4e4e4;">Gallery</h2>
+
+
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="set1/_DSC4981.jpg" alt="Product" />
+            </div>
+            <div class="product-card">
+                <img src="set1/_DSC4863.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="set1/525859627_4085423658386143_4015747006051313488_n.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b6/d0/18/b6d018c9e331a0f00eaf2fba6dbd073f.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b6/d0/18/b6d018c9e331a0f00eaf2fba6dbd073f.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b6/d0/18/b6d018c9e331a0f00eaf2fba6dbd073f.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b6/d0/18/b6d018c9e331a0f00eaf2fba6dbd073f.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b6/d0/18/b6d018c9e331a0f00eaf2fba6dbd073f.jpg" alt="Product" />
+                <p class="category">T-Shirt</p>
+                <h3>(Brand) X Pop Polo shirt, navy / White</h3>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <p>&copy; 2025 banner. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="image-modal">
+        <span class="close-button">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Preloader
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500); // Wait for the fade-out to complete
+            });
+
+            // Hero content fade-in on load
+            const heroContent = document.querySelector('.hero-content');
+            heroContent.classList.add('fade-in');
+
+            // Scroll-triggered animations (Product Cards)
+            const productCards = document.querySelectorAll('.product-card');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, observerOptions);
+
+            productCards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // Smooth scrolling for navigation links and hamburger menu links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // Close hamburger menu after clicking a link (on mobile)
+                    if (window.innerWidth <= 768) {
+                        const navLinks = document.querySelector('.nav-links');
+                        const hamburger = document.querySelector('.hamburger');
+                        navLinks.classList.remove('active');
+                        hamburger.classList.remove('active');
+                        // Remove staggered animation classes on close
+                        navLinks.querySelectorAll('a').forEach((link, index) => {
+                            link.style.transitionDelay = '0s'; // Reset delay
+                            link.style.opacity = '0'; // Hide for next open animation
+                            link.style.transform = 'translateY(20px)'; // Reset position
+                        });
+                    }
+                });
+            });
+
+            // Tab Interaction (from your original code)
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    // Placeholder for dynamic filtering
+                });
+            });
+
+            // Hamburger Menu Toggle and Staggered Navigation Links Fade-in
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            const navAnchors = navLinks.querySelectorAll('a');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+
+                if (navLinks.classList.contains('active')) {
+                    // Apply staggered fade-in
+                    navAnchors.forEach((link, index) => {
+                        link.style.opacity = '0'; // Ensure starting hidden
+                        link.style.transform = 'translateY(20px)'; // Ensure starting off-set
+                        setTimeout(() => {
+                            link.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                            link.style.opacity = '1';
+                            link.style.transform = 'translateY(0)';
+                        }, index * 100); // 100ms delay for each link
+                    });
+                } else {
+                    // Reset for next open
+                    navAnchors.forEach((link) => {
+                        link.style.transition = 'none'; // Remove transition during immediate reset
+                        link.style.opacity = '0';
+                        link.style.transform = 'translateY(20px)';
+                    });
+                }
+            });
+
+            // Image Modal Logic
+            const imageModal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const closeButton = document.querySelector('.close-button');
+
+            document.querySelectorAll('.product-card img').forEach(img => {
+                img.addEventListener('click', function () {
+                    imageModal.classList.add('active');
+                    modalImage.src = this.src;
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+                });
+            });
+
+            // Close modal when clicking on the close button
+            closeButton.addEventListener('click', () => {
+                imageModal.classList.remove('active');
+                imageModal.classList.add('fade-out');
+                setTimeout(() => {
+                    imageModal.classList.remove('fade-out');
+                    document.body.style.overflow = '';
+                }, 300); // ต้องตรงกับ transition duration
+                document.body.style.overflow = ''; // Restore scrolling
+            });
+
+            // Close modal when clicking outside the image content
+            imageModal.addEventListener('click', (e) => {
+                if (e.target === imageModal) {
+                    imageModal.classList.remove('active');
+                    imageModal.classList.add('fade-out');
+                    setTimeout(() => {
+                        imageModal.classList.remove('fade-out');
+                        document.body.style.overflow = '';
+                    }, 300); // ต้องตรงกับ transition duration
+                    document.body.style.overflow = ''; // Restore scrolling
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && imageModal.classList.contains('active')) {
+                    imageModal.classList.remove('active');
+                    imageModal.classList.add('fade-out');
+                    setTimeout(() => {
+                        imageModal.classList.remove('fade-out');
+                        document.body.style.overflow = '';
+                    }, 300); // ต้องตรงกับ transition duration
+                    document.body.style.overflow = ''; // Restore scrolling
+                }
+            });
+
+            // **New Feature: Product Card Information Reveal on Hover (Desktop Only)**
+            // Add CSS for these effects:
+            // In your <style> block, add:
+            // .product-card .category,
+            // .product-card h3 {
+            //     transition: opacity 0.3s ease, transform 0.3s ease;
+            //     opacity: 1; /* Default visible state */
+            //     transform: translateY(0); /* Default position */
+            // }
+
+            // @media (min-width: 769px) { /* Apply only on desktop */
+            //     .product-card .category,
+            //     .product-card h3 {
+            //         opacity: 0;
+            //         transform: translateY(10px);
+            //     }
+            //     .product-card:hover .category,
+            //     .product-card:hover h3 {
+            //         opacity: 1;
+            //         transform: translateY(0);
+            //     }
+            // }
+
+            // No direct JS needed for this if done purely with CSS :hover and media queries,
+            // which is often more performant. However, if you want JS control or more complex
+            // interactions, you could add mouseenter/mouseleave listeners here.
+            // Given the "minimalist" request, CSS is better for this.
+        });
+    </script>
+</body>
+
+</html>
