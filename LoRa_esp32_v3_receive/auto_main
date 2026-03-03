@@ -1,0 +1,157 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <RadioLib.h>
+#include <U8g2lib.h>
+
+// ================= WiFi =================
+const char* WiFi_SSID = "Smart";
+const char* WiFi_PASS = "0123456789";
+
+// ================= NETPIE =================
+const char* MQTT_BROKER   = "mqtt.netpie.io";
+const char* MQTT_CLIENT_ID = "916989ab-e3b4-4db3-ba4e-2669c6644e60";
+const char* MQTT_TOKEN    = "wJAqCeYdFdzzmJqjeoY5pWZkFBS5zb5E";
+const char* MQTT_SECRET  = "rtc2D8xG3GFev6ANSAjeGxexce8td5bn";
+
+// ================= Hardware =================
+#define VEXT_CTRL 36
+#define FAN_PIN   5          // LED / Pump
+#define TEMP_THRESHOLD 30.0  // AUTO threshold
+
+// ================= MANUAL CONTROL =================
+int manual_mode = 0;   // 0 = AUTO, 1 = MANUAL
+int manual_pump = 0;   // 0 = OFF, 1 = ON
+
+// ================= LoRa =================
+// NSS: 8, DIO1: 14, NRST: 12, BUSY: 13
+SX1262 radio = new Module(8, 14, 12, 13);
+
+// ================= OLED =================
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
+  U8G2_R0, /* reset=*/21, /* clock=*/18, /* data=*/17
+);
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// =================================================
+// MQTT CALLBACK (รับ Manual จาก Dashboard)
+// =================================================
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  payload[length] = '\0';
+  String msg = String((char*)payload);
+
+  Serial.print("[MQTT DELTA] ");
+  Serial.println(msg);
+
+  if (msg.indexOf("\"manual_mode\"") != -1) {
+    manual_mode = msg.indexOf("\"manual_mode\":1") != -1 ? 1 : 0;
+  }
+
+  if (msg.indexOf("\"manual_pump\"") != -1) {
+    manual_pump = msg.indexOf("\"manual_pump\":1") != -1 ? 1 : 0;
+  }
+}
+
+// =================================================
+void setup_wifi() {
+  WiFi.begin(WiFi_SSID, WiFi_PASS);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi Connected");
+}
+
+// =================================================
+void reconnect() {
+  while (!client.connected()) {
+    if (client.connect(MQTT_CLIENT_ID, MQTT_TOKEN, MQTT_SECRET)) {
+      client.subscribe("@shadow/data/update/delta");
+    } else {
+      delay(3000);
+    }
+  }
+}
+
+// =================================================
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(FAN_PIN, OUTPUT);
+  digitalWrite(FAN_PIN, LOW);
+
+  pinMode(VEXT_CTRL, OUTPUT);
+  digitalWrite(VEXT_CTRL, LOW);
+  delay(100);
+
+  u8g2.begin();
+  u8g2.setFont(u8g2_font_ncenB08_tr);
+
+  // LoRa
+  radio.begin(923.2, 125.0, 7, 5, 0x34, 22, 8);
+
+  // WiFi + MQTT
+  setup_wifi();
+  client.setServer(MQTT_BROKER, 1883);
+  client.setCallback(mqttCallback);
+}
+
+// =================================================
+void loop() {
+  if (!client.connected()) reconnect();
+  client.loop();
+
+  String received_str;
+  int state = radio.receive(received_str);
+
+  if (state == RADIOLIB_ERR_NONE) {
+
+    float temperature = 0, humidity = 0;
+    int packet = 0;
+    float rssi = radio.getRSSI();
+
+    int t = received_str.indexOf("T:");
+    int h = received_str.indexOf(",H:");
+    int p = received_str.indexOf(",P:");
+
+    if (t != -1 && h != -1 && p != -1) {
+      temperature = received_str.substring(t + 2, h).toFloat();
+      humidity    = received_str.substring(h + 3, p).toFloat();
+      packet      = received_str.substring(p + 3).toInt();
+
+      // ================= CONTROL LOGIC =================
+      int pump_status = 0;
+
+      if (manual_mode == 1) {
+        // MANUAL OVERRIDE
+        pump_status = manual_pump;
+      } else {
+        // AUTO
+        pump_status = (temperature >= TEMP_THRESHOLD) ? 1 : 0;
+      }
+
+      digitalWrite(FAN_PIN, pump_status ? HIGH : LOW);
+
+      // ================= OLED =================
+      u8g2.clearBuffer();
+      u8g2.setCursor(0,15); u8g2.print("RX Node");
+      u8g2.setCursor(0,32); u8g2.print("T: "); u8g2.print(temperature); u8g2.print(" C");
+      u8g2.setCursor(0,48); u8g2.print("Pump: ");
+      u8g2.print(pump_status ? "ON" : "OFF");
+      u8g2.sendBuffer();
+
+      // ================= SHADOW REPORT =================
+      String payload = "{ \"data\": {";
+      payload += "\"Temperature\":" + String(temperature,1) + ",";
+      payload += "\"Humidity\":"    + String(humidity,1)    + ",";
+      payload += "\"PumpStatus\":"  + String(pump_status)  + ",";
+      payload += "\"ManualMode\":"  + String(manual_mode)  + ",";
+      payload += "\"ManualPump\":"  + String(manual_pump)  + ",";
+      payload += "\"RSSI\":"         + String(rssi);
+      payload += "} }";
+
+      client.publish("@shadow/data/update", payload.c_str());
+    }
+  }
+}
